@@ -1,5 +1,7 @@
 # 一漫
 
+<img src="docs/app-icon.png" width="128" height="128" alt="一漫 App 圖示" />
+
 一漫是 Android 漫畫閱讀器，基於 [Mihon](https://github.com/mihonapp/mihon) 開發。
 
 從 [GitHub Releases](https://github.com/freezingyip/yiman/releases) 下載已簽署的 APK。
