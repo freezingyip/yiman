@@ -148,7 +148,7 @@ class MangaScreen(
             onFilterButtonClicked = viewModel::showSettingsDialog,
             onRefresh = viewModel::fetchAllFromSource,
             onContinueReading = {
-                scope.launch { continueReading(context, viewModel.getNextUnreadChapter(), successState.manga) }
+                scope.launch { continueReading(context, viewModel.getChapterToResume()) }
             },
             onSearch = { query, global -> scope.launch { performSearch(navigator, query, global) } },
             onCoverClicked = viewModel::showCoverDialog,
@@ -301,12 +301,10 @@ class MangaScreen(
         }
     }
 
-    private fun continueReading(context: Context, unreadChapter: Chapter?, manga: Manga) {
+    private fun continueReading(context: Context, unreadChapter: Chapter?) {
         if (unreadChapter == null) return
         val intent = ReaderActivity.newIntent(context, unreadChapter.mangaId, unreadChapter.id)
-        if (local.hengdu.reader.HengduLibraryMigration.isImported(context, manga.source, manga.url)) {
-            intent.putExtra("page_index", unreadChapter.lastPageRead.coerceAtLeast(0))
-        }
+        intent.putExtra("page_index", unreadChapter.lastPageRead.coerceAtLeast(0))
         context.startActivity(intent)
     }
 

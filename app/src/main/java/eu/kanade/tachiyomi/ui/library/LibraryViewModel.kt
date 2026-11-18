@@ -16,7 +16,6 @@ import eu.kanade.core.preference.asState
 import eu.kanade.core.util.fastFilterNot
 import eu.kanade.domain.base.BasePreferences
 import eu.kanade.domain.chapter.interactor.SetReadStatus
-import eu.kanade.domain.chapter.model.applyFilters
 import eu.kanade.domain.manga.interactor.UpdateManga
 import eu.kanade.presentation.library.components.LibraryToolbarTitle
 import eu.kanade.presentation.manga.DownloadAction
@@ -26,7 +25,7 @@ import eu.kanade.tachiyomi.data.download.DownloadManager
 import eu.kanade.tachiyomi.data.track.TrackerManager
 import eu.kanade.tachiyomi.source.model.SManga
 import eu.kanade.tachiyomi.source.online.HttpSource
-import eu.kanade.tachiyomi.util.chapter.getNextUnread
+import eu.kanade.tachiyomi.util.chapter.getChapterToResume
 import eu.kanade.tachiyomi.util.removeCovers
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -46,7 +45,7 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.plus
 import kotlinx.coroutines.withContext
-import local.hengdu.reader.HengduResume
+import local.hengdu.reader.HengduLibraryMigration
 import mihon.core.common.utils.mutate
 import mihon.core.metro.AppCoroutineScope
 import mihon.domain.library.model.search.QueryNode
@@ -493,16 +492,17 @@ class LibraryViewModel(
             ?: getCategories.await(manga.id).mapTo(mutableSetOf()) { it.id }
     }
 
-    suspend fun getNextUnreadChapter(manga: Manga): Chapter? {
+    suspend fun getChapterToResume(manga: Manga): Chapter? {
         val chapters = getChaptersByMangaId.await(manga.id, applyScanlatorFilter = true)
+        val history = historyRepository.getHistoryByMangaId(manga.id)
         return withContext(Dispatchers.Default) {
-            if (local.hengdu.reader.HengduLibraryMigration.isImported(context, manga.source, manga.url)) {
-                val available = chapters.applyFilters(manga, preferences.downloadedOnly.get(), downloadManager)
-                HengduResume.lastRead(manga.source, available, historyRepository.getHistoryByMangaId(manga.id))?.let {
-                    return@withContext it
-                }
-            }
-            chapters.getNextUnread(manga, preferences.downloadedOnly.get(), downloadManager)
+            chapters.getChapterToResume(
+                manga,
+                preferences.downloadedOnly.get(),
+                downloadManager,
+                history,
+                inferLegacyProgress = HengduLibraryMigration.isImported(context, manga.source, manga.url),
+            )
         }
     }
 

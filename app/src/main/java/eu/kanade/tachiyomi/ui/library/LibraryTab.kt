@@ -192,17 +192,10 @@ data object LibraryTab : Tab {
                         onClickManga = { navigator.push(MangaScreen(it)) },
                         onContinueReadingClicked = { it: LibraryManga ->
                             scope.launch {
-                                val chapter = viewModel.getNextUnreadChapter(it.manga)
+                                val chapter = viewModel.getChapterToResume(it.manga)
                                 if (chapter != null) {
                                     val intent = ReaderActivity.newIntent(context, chapter.mangaId, chapter.id)
-                                    if (local.hengdu.reader.HengduLibraryMigration.isImported(
-                                            context,
-                                            it.manga.source,
-                                            it.manga.url,
-                                        )
-                                    ) {
-                                        intent.putExtra("page_index", chapter.lastPageRead.coerceAtLeast(0))
-                                    }
+                                    intent.putExtra("page_index", chapter.lastPageRead.coerceAtLeast(0))
                                     context.startActivity(intent)
                                 } else {
                                     snackbarHostState.showSnackbar(context.stringResource(MR.strings.no_next_chapter))

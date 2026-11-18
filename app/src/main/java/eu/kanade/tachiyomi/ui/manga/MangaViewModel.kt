@@ -25,7 +25,6 @@ import eu.kanade.core.util.insertSeparators
 import eu.kanade.domain.base.BasePreferences
 import eu.kanade.domain.chapter.interactor.GetAvailableScanlators
 import eu.kanade.domain.chapter.interactor.SetReadStatus
-import eu.kanade.domain.chapter.model.applyFilters
 import eu.kanade.domain.manga.interactor.GetExcludedScanlators
 import eu.kanade.domain.manga.interactor.SetExcludedScanlators
 import eu.kanade.domain.manga.interactor.UpdateManga
@@ -49,7 +48,7 @@ import eu.kanade.tachiyomi.data.track.TrackerManager
 import eu.kanade.tachiyomi.source.Source
 import eu.kanade.tachiyomi.source.getNameForMangaInfo
 import eu.kanade.tachiyomi.ui.reader.setting.ReaderPreferences
-import eu.kanade.tachiyomi.util.chapter.getNextUnread
+import eu.kanade.tachiyomi.util.chapter.getChapterToResume
 import eu.kanade.tachiyomi.util.removeCovers
 import eu.kanade.tachiyomi.util.system.toast
 import kotlinx.coroutines.CancellationException
@@ -75,7 +74,7 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.plus
 import kotlinx.coroutines.withContext
-import local.hengdu.reader.HengduResume
+import local.hengdu.reader.HengduLibraryMigration
 import logcat.LogPriority
 import mihon.core.metro.AppCoroutineScope
 import mihon.domain.chapter.interactor.FilterChaptersForDownload
@@ -295,7 +294,7 @@ class MangaViewModel(
             dialog = dialog,
             hideMissingChapters = hideMissingChapters,
             downloadedOnly = downloadedOnly,
-            hasImportedProgress = local.hengdu.reader.HengduLibraryMigration.isImported(
+            hasImportedProgress = HengduLibraryMigration.isImported(
                 context,
                 mangaAndChapters.manga.source,
                 mangaAndChapters.manga.url,
@@ -665,33 +664,16 @@ class MangaViewModel(
         }
     }
 
-    /**
-     * Returns the next unread chapter or null if everything is read.
-     */
-    suspend fun getNextUnreadChapter(): Chapter? {
-        val successState = successState ?: return null
+    suspend fun getChapterToResume(): Chapter? {
+        val state = successState ?: return null
+        val history = historyRepository.getHistoryByMangaId(state.manga.id)
         return withContext(Dispatchers.Default) {
-            if (local.hengdu.reader.HengduLibraryMigration.isImported(
-                    context,
-                    successState.manga.source,
-                    successState.manga.url,
-                )
-            ) {
-                val available = successState.chapters.applyFilters(
-                    successState.manga,
-                    successState.downloadedOnly,
-                ).map {
-                    it.chapter
-                }.toList()
-                HengduResume.lastRead(
-                    successState.manga.source,
-                    available,
-                    historyRepository.getHistoryByMangaId(successState.manga.id),
-                )?.let {
-                    return@withContext it
-                }
-            }
-            successState.chapters.getNextUnread(successState.manga, successState.downloadedOnly)
+            state.chapters.getChapterToResume(
+                state.manga,
+                state.downloadedOnly,
+                history,
+                inferLegacyProgress = state.hasImportedProgress,
+            )
         }
     }
 

@@ -4,34 +4,41 @@ import eu.kanade.domain.chapter.model.applyFilters
 import eu.kanade.tachiyomi.data.download.DownloadManager
 import eu.kanade.tachiyomi.ui.manga.ChapterList
 import tachiyomi.domain.chapter.model.Chapter
+import tachiyomi.domain.history.model.History
 import tachiyomi.domain.manga.model.Manga
 
-/**
- * Gets next unread chapter with filters and sorting applied
- */
-fun List<Chapter>.getNextUnread(
+internal fun List<Chapter>.getChapterToResume(
     manga: Manga,
     downloadedOnly: Boolean,
     downloadManager: DownloadManager,
-): Chapter? {
-    return applyFilters(manga, downloadedOnly, downloadManager).let { chapters ->
-        if (manga.sortDescending()) {
-            chapters.findLast { !it.read }
-        } else {
-            chapters.find { !it.read }
-        }
-    }
-}
+    history: List<History>,
+    inferLegacyProgress: Boolean,
+): Chapter? = applyFilters(manga, downloadedOnly, downloadManager)
+    .getChapterToResume(history, manga.sortDescending(), inferLegacyProgress)
 
-/**
- * Gets next unread chapter with filters and sorting applied
- */
-fun List<ChapterList.Item>.getNextUnread(manga: Manga, downloadedOnly: Boolean): Chapter? {
-    return applyFilters(manga, downloadedOnly).let { chapters ->
-        if (manga.sortDescending()) {
-            chapters.findLast { !it.chapter.read }
-        } else {
-            chapters.find { !it.chapter.read }
-        }
-    }?.chapter
+internal fun List<ChapterList.Item>.getChapterToResume(
+    manga: Manga,
+    downloadedOnly: Boolean,
+    history: List<History>,
+    inferLegacyProgress: Boolean,
+): Chapter? = applyFilters(manga, downloadedOnly)
+    .map { it.chapter }
+    .toList()
+    .getChapterToResume(history, manga.sortDescending(), inferLegacyProgress)
+
+internal fun List<Chapter>.getChapterToResume(
+    history: List<History>,
+    sortDescending: Boolean,
+    inferLegacyProgress: Boolean,
+): Chapter? {
+    val latest = history.asSequence()
+        .filter { it.readAt != null }
+        .maxWithOrNull(compareBy(History::readAt).thenBy(History::id))
+    if (latest != null) {
+        find { it.id == latest.chapterId }?.let { return it }
+    } else if (inferLegacyProgress) {
+        // Some imported snapshots have a page position but no history.
+        singleOrNull { it.lastPageRead > 0 && !it.read }?.let { return it }
+    }
+    return if (sortDescending) findLast { !it.read } else find { !it.read }
 }

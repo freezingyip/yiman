@@ -1,5 +1,6 @@
 package local.hengdu.reader
 
+import eu.kanade.tachiyomi.util.chapter.getChapterToResume
 import eu.kanade.tachiyomi.util.chapter.removeDuplicates
 import io.kotest.matchers.shouldBe
 import org.junit.jupiter.api.Test
@@ -9,18 +10,19 @@ import kotlin.time.Instant
 
 class HengduResumeTest {
     @Test
-    fun `continues most recent available chapter even if earlier chapters remain unread`() {
-        val chapter2 = Chapter.create().copy(id = 2)
-        val chapter18 = Chapter.create().copy(id = 18, lastPageRead = 0)
-        val history = listOf(History.create().copy(chapterId = 18, readAt = Instant.fromEpochMilliseconds(2000)))
-        HengduResume.lastRead(HengduLibrarySnapshot.MANHUAREN_SOURCE_ID, listOf(chapter2, chapter18), history) shouldBe
-            chapter18
-        HengduResume.lastRead(HengduLibrarySnapshot.BAOZI_SOURCE_ID, listOf(chapter2, chapter18), history) shouldBe
-            chapter18
-        HengduResume.lastRead(HengduLibrarySnapshot.MANHUAGUI_SOURCE_ID, listOf(chapter2, chapter18), history) shouldBe
-            chapter18
-        HengduResume.lastRead(999, listOf(chapter2, chapter18), history) shouldBe null
-        HengduResume.lastRead(HengduLibrarySnapshot.MANHUAREN_SOURCE_ID, listOf(chapter2), history) shouldBe null
+    fun `resumes chapter one after reading chapter thirty even at the first page`() {
+        val chapter1 = Chapter.create().copy(id = 110, chapterNumber = 1.0)
+        val chapter2 = Chapter.create().copy(id = 101, chapterNumber = 2.0)
+        val chapter30 = Chapter.create().copy(id = 30, chapterNumber = 30.0, lastPageRead = 4)
+        val history = listOf(
+            History.create().copy(chapterId = chapter1.id, readAt = Instant.fromEpochMilliseconds(3000)),
+            History.create().copy(chapterId = chapter30.id, readAt = Instant.fromEpochMilliseconds(1000)),
+        )
+        listOf(chapter30, chapter2, chapter1)
+            .getChapterToResume(history, sortDescending = false, inferLegacyProgress = false) shouldBe chapter1
+        val resumed = chapter1.copy(read = true, lastPageRead = 4)
+        listOf(chapter30, chapter2, resumed)
+            .getChapterToResume(history, sortDescending = false, inferLegacyProgress = false) shouldBe resumed
     }
 
     @Test
@@ -40,24 +42,27 @@ class HengduResumeTest {
         val third = Chapter.create().copy(id = 3, lastPageRead = 3)
         val otherStarted = Chapter.create().copy(id = 4, lastPageRead = 1)
         val noHistory = emptyList<History>()
-        val source = HengduLibrarySnapshot.MANHUAREN_SOURCE_ID
-        HengduResume.lastRead(source, listOf(first, third), noHistory) shouldBe third
-        HengduResume.lastRead(source, listOf(first, third, otherStarted), noHistory) shouldBe null
-        val newer = listOf(History.create().copy(chapterId = first.id, readAt = Instant.fromEpochMilliseconds(3000)))
-        HengduResume.lastRead(source, listOf(first, third), newer) shouldBe first
+        val chapterList = listOf(first, third)
+        chapterList.getChapterToResume(noHistory, sortDescending = false, inferLegacyProgress = true) shouldBe third
+        chapterList.getChapterToResume(noHistory, sortDescending = false, inferLegacyProgress = false) shouldBe first
+        listOf(first, third, otherStarted)
+            .getChapterToResume(noHistory, sortDescending = false, inferLegacyProgress = true) shouldBe first
     }
 
     @Test
-    fun `completed or filtered latest chapter defers to native next unread selection`() {
-        val source = HengduLibrarySnapshot.MANHUAREN_SOURCE_ID
+    fun `a filtered latest chapter defers to native next unread selection`() {
         val earlier = Chapter.create().copy(id = 1, lastPageRead = 2)
         val completed = Chapter.create().copy(id = 2, lastPageRead = 9, read = true)
+        val unstarted = Chapter.create().copy(id = 3)
         val latest = listOf(
             History.create().copy(chapterId = earlier.id, readAt = Instant.fromEpochMilliseconds(1000)),
             History.create().copy(chapterId = completed.id, readAt = Instant.fromEpochMilliseconds(2000)),
         )
-        HengduResume.lastRead(source, listOf(earlier, completed), latest) shouldBe null
-        HengduResume.lastRead(source, listOf(earlier), latest) shouldBe null
-        HengduResume.lastRead(source, listOf(completed), emptyList()) shouldBe null
+        listOf(completed, earlier, unstarted)
+            .getChapterToResume(latest, sortDescending = true, inferLegacyProgress = false) shouldBe completed
+        listOf(earlier, unstarted)
+            .getChapterToResume(latest, sortDescending = true, inferLegacyProgress = false) shouldBe unstarted
+        listOf(completed).getChapterToResume(emptyList(), sortDescending = false, inferLegacyProgress = false) shouldBe
+            null
     }
 }
