@@ -1,0 +1,1 @@
+Lector de manga para Android con biblioteca y descargas sin conexión.

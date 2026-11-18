@@ -1,0 +1,3 @@
+Yiman is an Android manga reader with a local library, reading progress, and chapter downloads for offline reading. It supports paged and vertical reading modes.
+
+Yiman is based on the open-source Mihon project.

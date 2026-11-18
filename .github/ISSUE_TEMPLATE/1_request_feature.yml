@@ -1,0 +1,36 @@
+name: ⭐ Feature request
+description: Suggest a feature for Yiman
+labels: [feature request]
+body:
+  - type: textarea
+    id: feature-description
+    attributes:
+      label: Describe your suggested feature
+      description: How can Yiman be improved?
+      placeholder: |
+        Example:
+          "It should work like this..."
+    validations:
+      required: true
+
+  - type: textarea
+    id: other-details
+    attributes:
+      label: Other details
+      placeholder: |
+        Additional details and attachments.
+
+  - type: checkboxes
+    id: acknowledgements
+    attributes:
+      label: Acknowledgements
+      description: Please check these items before submitting.
+      options:
+        - label: I have searched the existing issues and this is a new ticket, **NOT** a duplicate or related to another open or closed issue.
+          required: true
+        - label: I have written a short but informative title.
+          required: true
+        - label: I have checked whether the feature exists in the latest available version of this app.
+          required: true
+        - label: I will fill out all of the requested information in this form.
+          required: true

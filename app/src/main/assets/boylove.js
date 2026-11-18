@@ -1,0 +1,14 @@
+/* BoyLove anonymous public pages. Data is parsed without executing source scripts. */
+window.BoyLove=(()=>{
+ const origin='https://boylove.cc';
+ const proxy=(u,ref)=>'/proxy?url='+encodeURIComponent(u)+(ref?'&ref='+encodeURIComponent(ref):'');
+ function valid(raw,pat){let u=new URL(raw,origin);if(u.protocol!=='https:'||u.hostname!=='boylove.cc'||!pat.test(u.pathname))throw Error('BoyLove 網址無效');return u.href}
+ function image(raw){if(!raw)return '';try{let u=new URL(raw,origin);if(u.protocol!=='https:'||!(u.hostname==='boylove.cc'||u.hostname.endsWith('.boylove.cc')))return '';return proxy(u.href)}catch(e){return ''}}
+ async function get(u){let r=await fetch(proxy(u));if(!r.ok)throw Error('無法連線 BoyLove');return r.text()}
+ const doc=s=>new DOMParser().parseFromString(s,'text/html');
+ async function search(q){let data=JSON.parse(await get(origin+'/home/api/searchk?keyword='+encodeURIComponent(q)+'&type=1&pageNo=1'));let list=(data.result&&data.result.list)||[];return {results:list.filter(x=>/^\d+$/.test(String(x.id))&&x.title).map(x=>({title:x.title,url:origin+'/home/book/index/id/'+x.id+'/',cover:image(x.image||x.cover||''),source:'BoyLove'}))}}
+ function findList(s){let m,re=/let\s+data\s*=\s*JSON\.parse\(("(?:\\.|[^"\\])*")\)\s*;/g;while((m=re.exec(s))){try{let d=JSON.parse(JSON.parse(m[1]));if(d&&Array.isArray(d.list))return d.list}catch(e){}}return []}
+ async function chapters(raw){let url=valid(raw,/^\/home\/book\/index\/id\/\d+\/?$/),html=await get(url),d=doc(html),list=findList(html);let chapters=list.filter(x=>/^\d+$/.test(String(x.id))&&String(x.isvip)==='0').map(x=>({title:String(x.title||'章節').trim(),url:origin+'/home/book/capter/id/'+x.id}));if(!chapters.length)throw Error('找不到免登入可閱讀的章節。');let desc=d.querySelector('span.detail-text'),author='';for(let p of d.querySelectorAll('p.data')){if(/作者/.test(p.textContent)){let a=p.querySelector('a');author=a?a.textContent.trim():'';break}}return {chapters,summary:desc?desc.textContent.trim():'',author,status:'',cover:''}}
+ async function chapter(raw){let url=valid(raw,/^\/home\/book\/capter\/id\/\d+\/?$/),html=await get(url),d=doc(html),images=[];for(let img of d.querySelectorAll('.reader-cartoon-chapter .reader-cartoon-image img')){let u=image(img.getAttribute('data-original')||'');if(u)images.push(u)}if(!images.length)throw Error('此章節未提供公開圖片或需要登入。');let book=(html.match(/chapter_nearby\?manhua_id=(\d+)&(?:amp;)?capter_id=(\d+)/)||[]),nextChapter=null;if(book[1]){try{let data=JSON.parse(await get(origin+'/home/api/chapter_nearby?manhua_id='+book[1]+'&capter_id='+book[2]+'&next=1'));if(data.succ&&data.result&&/^\d+$/.test(String(data.result.id))){let allowed=(await chapters(origin+'/home/book/index/id/'+book[1]+'/')).chapters;let next=origin+'/home/book/capter/id/'+data.result.id;if(allowed.some(x=>x.url===next))nextChapter=next}}catch(e){}}return {title:(d.title||'BoyLove').trim(),images,nextChapter}}
+ return {search,chapters,chapter};
+})();

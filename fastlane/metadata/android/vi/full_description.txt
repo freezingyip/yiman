@@ -1,0 +1,3 @@
+Yiman là ứng dụng đọc manga trên Android với thư viện cục bộ, tiến độ đọc và tải chương để đọc ngoại tuyến. Ứng dụng hỗ trợ đọc theo trang và cuộn dọc.
+
+Yiman được phát triển dựa trên dự án mã nguồn mở Mihon.

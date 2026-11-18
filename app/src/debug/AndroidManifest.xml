@@ -1,0 +1,10 @@
+<manifest xmlns:android="http://schemas.android.com/apk/res/android" xmlns:tools="http://schemas.android.com/tools">
+    <application>
+        <activity android:name="local.hengdu.reader.DebugOnlineGatewayActivity" android:exported="true" />
+        <activity android:name="eu.kanade.tachiyomi.ui.reader.DebugReaderTestActivity" android:exported="true" />
+        <activity android:name="local.hengdu.reader.bridge.DebugOfflineTransferActivity" android:exported="true" />
+        <activity android:name="local.hengdu.reader.bridge.DebugOnlineTransferActivity" android:exported="true" />
+        <activity android:name="local.hengdu.reader.bridge.DebugReaderBridgeActivity" android:exported="true" />
+        <activity android:name="local.hengdu.reader.bridge.DebugWebtoonReaderActivity" android:exported="true" />
+    </application>
+</manifest>
