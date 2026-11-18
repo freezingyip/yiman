@@ -9,7 +9,6 @@
 <p>
   <img src="docs/screenshots/library.png" width="225" alt="書架與未讀章節數" />
   <img src="docs/screenshots/search.png" width="225" alt="漫畫來源搜尋結果" />
-  <img src="docs/screenshots/reader.png" width="225" alt="閱讀器的頁碼與章節切換操作" />
 </p>
 
 ## 功能
