@@ -20,7 +20,9 @@
 ./gradlew :app:assembleDebug
 ```
 
-測試版 APK 位於 `app/build/outputs/apk/debug/`。在 App 的「關於」頁按「檢查更新」，可手動前往 [一漫的 GitHub Releases](https://github.com/freezingyip/yiman/releases) 查看發行版本。
+測試版 APK 位於 `app/build/outputs/apk/debug/`。已簽署的公開版本可在 [GitHub Releases](https://github.com/freezingyip/yiman/releases) 下載。App 的「關於 → 檢查更新」也會開啟該頁。
+
+公開版可與原有的測試版並存。若要轉移書架和閱讀記錄，先在測試版的「資料與儲存空間」建立備份，再在公開版還原。備份檔不包含已下載的漫畫圖片。
 
 ## 開源與授權
 

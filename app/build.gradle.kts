@@ -78,8 +78,6 @@ android {
             isMinifyEnabled = true
             isShrinkResources = true
 
-            signingConfig = debug.signingConfig
-
             isProfileable = true
 
             proguardFiles("proguard-android-optimize.txt", "proguard-rules.pro")
@@ -89,6 +87,7 @@ android {
 
         create("foss") {
             initWith(release)
+            signingConfig = debug.signingConfig
 
             applicationIdSuffix = ".foss"
 
@@ -96,6 +95,7 @@ android {
         }
         create("nightly") {
             initWith(release)
+            signingConfig = debug.signingConfig
 
             applicationIdSuffix = ".debug"
 
@@ -103,6 +103,7 @@ android {
         }
         create("benchmark") {
             initWith(release)
+            signingConfig = debug.signingConfig
 
             versionNameSuffix = "-benchmark"
             applicationIdSuffix = ".benchmark"
@@ -415,6 +416,14 @@ fun ApplicationVariant.buildConfigField(type: String, name: String, value: Provi
 }
 
 androidComponents {
+    onVariants(selector().withBuildType("release")) { variant ->
+        variant.applicationId.set("io.github.freezingyip.yiman")
+        variant.outputs.forEach { output ->
+            output.versionCode.set(1)
+            output.versionName.set("0.1.0-preview.1")
+        }
+    }
+
     onVariants { variant ->
         val isUnstableBuild = variant.buildType == "debug" || variant.buildType == "nightly"
         val buildTime = if (isUnstableBuild) currentTime else latestCommitTime
