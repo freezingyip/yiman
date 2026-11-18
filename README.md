@@ -2,6 +2,16 @@
 
 一漫是 Android 漫畫閱讀器，基於 [Mihon](https://github.com/mihonapp/mihon) 開發。
 
+從 [GitHub Releases](https://github.com/freezingyip/yiman/releases) 下載已簽署的 APK。
+
+## App 截圖
+
+<p>
+  <img src="docs/screenshots/library.png" width="225" alt="書架與未讀章節數" />
+  <img src="docs/screenshots/search.png" width="225" alt="漫畫來源搜尋結果" />
+  <img src="docs/screenshots/reader.png" width="225" alt="閱讀器的頁碼與章節切換操作" />
+</p>
+
 ## 功能
 
 - 本機書架、閱讀進度與歷史記錄。
@@ -11,6 +21,10 @@
 - 更新書架以檢查漫畫章節。
 
 支援 Android 8.0（API 26）及以上版本。來源的可用性取決於各來源網站。
+
+## Android 8.0 的 WebView
+
+一漫使用系統的 WebView 來顯示 App 內的網站與驗證頁。Android 8.0／8.1 裝置若遇到驗證頁空白或打不開，可先在系統的「開發人員選項 → WebView 實作」確認目前使用的是 Android System WebView 還是 Chrome，並在 Google Play 更新該元件至裝置支援的版本。若元件已停用，請先在系統的應用程式設定重新啟用，再重開一漫試一次。[Android 官方說明](https://developer.android.com/about/versions/nougat/android-7.0#webview)
 
 ## 建置
 
