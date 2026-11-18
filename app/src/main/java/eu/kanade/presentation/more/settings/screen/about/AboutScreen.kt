@@ -75,7 +75,8 @@ object AboutScreen : Screen() {
                 item {
                     TextPreferenceWidget(
                         title = stringResource(MR.strings.check_for_updates),
-                        subtitle = stringResource(MR.strings.shiman_update_unconfigured),
+                        subtitle = stringResource(MR.strings.yiman_update_releases),
+                        onPreferenceClick = { uriHandler.openUri("https://github.com/freezingyip/yiman/releases") },
                     )
                 }
                 item {

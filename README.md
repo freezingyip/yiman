@@ -20,7 +20,7 @@
 ./gradlew :app:assembleDebug
 ```
 
-測試版 APK 位於 `app/build/outputs/apk/debug/`。本專案的 GitHub Releases 尚未設定，應用程式更新檢查暫不可用；書架章節更新不受影響。
+測試版 APK 位於 `app/build/outputs/apk/debug/`。在 App 的「關於」頁按「檢查更新」，可手動前往 [一漫的 GitHub Releases](https://github.com/freezingyip/yiman/releases) 查看發行版本。
 
 ## 開源與授權
 

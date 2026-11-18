@@ -3,7 +3,7 @@
     <string name="shiman_about_app">About Yiman</string>
     <string name="shiman_about_description">A manga reader for Android, with a local library and offline downloads.</string>
     <string name="shiman_github_account">GitHub account</string>
-    <string name="shiman_update_unconfigured">App updates will be available after a release repository is configured.</string>
+    <string name="yiman_update_releases">View Yiman releases on GitHub.</string>
     <string name="shiman_open_source">Open source</string>
     <string name="shiman_mihon_credit">Based on Mihon. Tap to view the upstream project.</string>
     <string name="mihon_help_label">Mihon guide</string>
