@@ -8,8 +8,7 @@ val telemetryIncluded: Boolean
     inline get() = BuildConfig.TELEMETRY_INCLUDED
 
 val updaterEnabled: Boolean
-    // Remain disabled in every build until this app has its own update repository.
-    inline get() = false
+    inline get() = BuildConfig.APPLICATION_ID == "io.github.freezingyip.yiman"
 
 val isDebugBuildType: Boolean
     inline get() = BuildConfig.BUILD_TYPE == "debug"

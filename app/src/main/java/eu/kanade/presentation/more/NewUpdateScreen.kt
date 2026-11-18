@@ -77,11 +77,12 @@ fun NewUpdateScreen(
                 MR.strings.downloading_with_progress,
                 downloadProgress(),
             )
+            NewUpdateScreenModel.Stage.Installing -> stringResource(MR.strings.yiman_update_installing)
             NewUpdateScreenModel.Stage.Downloaded -> stringResource(MR.strings.action_install)
             NewUpdateScreenModel.Stage.Failed -> stringResource(MR.strings.action_retry)
         },
         onAcceptClick = onAcceptUpdate,
-        canAccept = stage != NewUpdateScreenModel.Stage.Downloading,
+        canAccept = stage != NewUpdateScreenModel.Stage.Downloading && stage != NewUpdateScreenModel.Stage.Installing,
         rejectText = stringResource(MR.strings.action_not_now),
         onRejectClick = onRejectUpdate,
         rejectAction = {

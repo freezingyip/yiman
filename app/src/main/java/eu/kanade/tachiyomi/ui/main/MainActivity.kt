@@ -339,9 +339,9 @@ class MainActivity : BaseActivity() {
         val context = LocalContext.current
         val navigator = LocalNavigator.currentOrThrow
 
-        // App updates
-        LaunchedEffect(Unit) {
-            if (!updaterEnabled) return@LaunchedEffect
+        val automaticAppUpdates by preferences.automaticAppUpdates.collectAsState()
+        LaunchedEffect(automaticAppUpdates) {
+            if (!updaterEnabled || !automaticAppUpdates) return@LaunchedEffect
             var lastCheck: Long? = null
             // The app can stay open for days now, so a cold start alone rarely checks.
             // Elapsed realtime keeps counting while the device sleeps, unlike the monotonic clock.
@@ -363,6 +363,7 @@ class MainActivity : BaseActivity() {
                                 changelogInfo = result.release.info,
                                 releaseLink = result.release.releaseLink,
                                 downloadLink = result.release.downloadLink,
+                                automatic = true,
                             )
                             navigator.push(updateScreen)
                         }

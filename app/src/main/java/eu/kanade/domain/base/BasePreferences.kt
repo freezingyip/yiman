@@ -46,6 +46,8 @@ class BasePreferences(
         false,
     )
 
+    val automaticAppUpdates = preferenceStore.getBoolean("automatic_app_updates", true)
+
     val skippedAppUpdate: Preference<String> = preferenceStore.getString(
         Preference.appStateKey("skipped_app_update"),
         "",

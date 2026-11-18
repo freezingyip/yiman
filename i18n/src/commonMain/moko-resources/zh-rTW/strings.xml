@@ -2,7 +2,11 @@
 <resources>
     <string name="shiman_about_app">關於一漫</string>
     <string name="shiman_about_description">Android 漫畫閱讀器，支援本機書架及離線下載。</string>
-    <string name="yiman_update_releases">開啟一漫的發行頁，手動查看新版本。</string>
+    <string name="yiman_auto_update">自動更新 App</string>
+    <string name="yiman_auto_update_summary">使用一漫時自動在 GitHub 檢查並下載新版。Android 可能要求授權或確認安裝。</string>
+    <string name="yiman_update_releases">到 GitHub 檢查是否有新版。</string>
+    <string name="yiman_update_check_failed">無法檢查 App 更新。</string>
+    <string name="yiman_update_installing">正在安裝…</string>
     <string name="shiman_open_source">開源致謝</string>
     <string name="shiman_mihon_credit">一漫基於 Mihon 開發；點擊可查看原始專案。</string>
     <string name="mihon_help_label">Mihon 原版指南</string>

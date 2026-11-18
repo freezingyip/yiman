@@ -11,11 +11,12 @@ data class GithubRelease(
     @SerialName("tag_name")
     val version: String,
     @SerialName("body")
-    val info: String,
+    val info: String? = null,
     @SerialName("html_url")
     val releaseLink: String,
     @SerialName("assets")
     val assets: List<GitHubAsset>,
+    val draft: Boolean = false,
 )
 
 /**

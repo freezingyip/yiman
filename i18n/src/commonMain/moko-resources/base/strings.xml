@@ -2,7 +2,11 @@
 <resources>
     <string name="shiman_about_app">About Yiman</string>
     <string name="shiman_about_description">A manga reader for Android, with a local library and offline downloads.</string>
-    <string name="yiman_update_releases">Check manually on the Yiman releases page.</string>
+    <string name="yiman_auto_update">Automatic app updates</string>
+    <string name="yiman_auto_update_summary">Check GitHub and download new versions while using Yiman. Android may ask you to allow or confirm installation.</string>
+    <string name="yiman_update_releases">Check for a new version on GitHub.</string>
+    <string name="yiman_update_check_failed">Could not check for app updates.</string>
+    <string name="yiman_update_installing">Installing…</string>
     <string name="shiman_open_source">Open source</string>
     <string name="shiman_mihon_credit">Based on Mihon. Tap to view the upstream project.</string>
     <string name="mihon_help_label">Mihon guide</string>
