@@ -2,8 +2,7 @@
 <resources>
     <string name="shiman_about_app">关于一漫</string>
     <string name="shiman_about_description">Android 漫画阅读器，支持本地书架及离线下载。</string>
-    <string name="shiman_github_account">GitHub 账号</string>
-    <string name="yiman_update_releases">前往 GitHub 查看一漫的发布版本。</string>
+    <string name="yiman_update_releases">打开一漫的发布页，手动查看新版本。</string>
     <string name="shiman_open_source">开源致谢</string>
     <string name="shiman_mihon_credit">一漫基于 Mihon 开发；点击可查看原始项目。</string>
     <string name="mihon_help_label">Mihon 原版指南</string>
