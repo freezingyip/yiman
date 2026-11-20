@@ -38,14 +38,14 @@
         android:allowBackup="false"
         android:enableOnBackInvokedCallback="true"
         android:hardwareAccelerated="true"
-        android:icon="@mipmap/ic_launcher"
+        android:icon="@drawable/ic_yiman_logo_transparent"
         android:label="@string/app_name"
         android:largeHeap="true"
         android:localeConfig="@xml/locales_config"
         android:networkSecurityConfig="@xml/network_security_config"
         android:preserveLegacyExternalStorage="true"
         android:requestLegacyExternalStorage="true"
-        android:roundIcon="@mipmap/ic_launcher"
+        android:roundIcon="@drawable/ic_yiman_logo_transparent"
         android:supportsRtl="true"
         android:theme="@style/Theme.Tachiyomi">
 
@@ -66,6 +66,7 @@
         <activity
             android:name=".ui.main.MainActivity"
             android:exported="true"
+            android:icon="@mipmap/ic_yiman_launcher_large"
             android:launchMode="singleTop"
             android:theme="@style/Theme.Tachiyomi.SplashScreen">
             <intent-filter>

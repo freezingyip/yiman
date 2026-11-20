@@ -65,7 +65,7 @@ class LibraryUpdateNotifier(
      * Bitmap of the app for notifications.
      */
     private val notificationBitmap by lazy {
-        BitmapFactory.decodeResource(context.resources, R.mipmap.ic_launcher)
+        BitmapFactory.decodeResource(context.resources, R.drawable.ic_yiman_logo_transparent)
     }
 
     /**
@@ -169,7 +169,7 @@ class LibraryUpdateNotifier(
         ) {
             setContentTitle(context.pluralStringResource(MR.plurals.notification_update_error, failed, failed))
             setContentText(context.stringResource(MR.strings.action_show_errors))
-            setSmallIcon(R.drawable.ic_mihon)
+            setSmallIcon(R.drawable.ic_yiman_notification)
 
             setContentIntent(NotificationReceiver.openErrorLogPendingActivity(context, uri))
         }
@@ -209,7 +209,7 @@ class LibraryUpdateNotifier(
                 }
             }
 
-            setSmallIcon(R.drawable.ic_mihon)
+            setSmallIcon(R.drawable.ic_yiman_notification)
             setLargeIcon(notificationBitmap)
 
             setGroup(Notifications.GROUP_NEW_CHAPTERS)
@@ -243,7 +243,7 @@ class LibraryUpdateNotifier(
             setContentText(description)
             setStyle(NotificationCompat.BigTextStyle().bigText(description))
 
-            setSmallIcon(R.drawable.ic_mihon)
+            setSmallIcon(R.drawable.ic_yiman_notification)
 
             if (icon != null) {
                 setLargeIcon(icon)

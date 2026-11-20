@@ -34,7 +34,7 @@ class DownloadNotifier(
 
     private val progressNotificationBuilder by lazy {
         context.notificationBuilder(Notifications.CHANNEL_DOWNLOADER_PROGRESS) {
-            setLargeIcon(BitmapFactory.decodeResource(context.resources, R.mipmap.ic_launcher))
+            setLargeIcon(BitmapFactory.decodeResource(context.resources, R.drawable.ic_yiman_logo_transparent))
             setAutoCancel(false)
             setOnlyAlertOnce(true)
         }
@@ -141,7 +141,7 @@ class DownloadNotifier(
             setContentTitle(context.stringResource(MR.strings.chapter_paused))
             setContentText(context.stringResource(MR.strings.download_notifier_download_paused))
             setSmallIcon(MaterialSymbolsR.drawable.rounded_filled_pause)
-            setLargeIcon(BitmapFactory.decodeResource(context.resources, R.mipmap.ic_launcher))
+            setLargeIcon(BitmapFactory.decodeResource(context.resources, R.drawable.ic_yiman_logo_transparent))
             setOnlyAlertOnce(true)
             // Open download manager when clicked
             setContentIntent(NotificationHandler.openDownloadManagerPendingActivity(context))
