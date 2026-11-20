@@ -32,10 +32,10 @@ stop and tell the user.
 
 ## Yiman releases
 
-- Keep only the newest Yiman release on GitHub and in local `build/yiman-releases/`.
-- Publish the new release and verify its signed APKs are downloadable and listed by the app's GitHub update
-  endpoint before removing earlier Yiman releases and their version tags. On the Mac, move older release
-  directories to Trash. Keep the source history and changelog.
+- Keep the two newest Yiman versions on GitHub and in local `build/yiman-releases/`, ordered by version number.
+- Publish and verify the new release, its signed APK downloads, and the app's GitHub update endpoint before
+  deleting releases and tags older than the newest two. On the Mac, move release directories older than the
+  newest two to Trash. Keep the source history and changelog.
 
 ## Pull requests
 
