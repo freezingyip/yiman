@@ -423,7 +423,8 @@ class LibraryViewModel(
             getLibraryManga.subscribe(),
             getLibraryItemPreferencesFlow(),
             downloadCache.changes.pausedWhileUnsubscribed(),
-        ) { libraryManga, preferences, _ ->
+            libraryPreferences.mangaWithUnseenUpdates.changes(),
+        ) { libraryManga, preferences, _, mangaWithUnseenUpdates ->
             val sources = libraryManga
                 .mapTo(mutableSetOf()) { it.manga.source }
                 .associateWith { sourceManager.getOrStub(it) }
@@ -439,6 +440,7 @@ class LibraryViewModel(
                     sourceName = source.name.lowercase(),
                     sourceLanguage = source.lang,
                     badges = LibraryItem.Badges(
+                        hasUnseenUpdate = manga.id.toString() in mangaWithUnseenUpdates && manga.unreadCount > 0,
                         downloadCount = if (preferences.downloadBadge) {
                             downloadCount
                         } else {

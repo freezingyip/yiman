@@ -67,6 +67,7 @@ import eu.kanade.presentation.more.settings.screen.data.RestoreBackupScreen
 import eu.kanade.presentation.util.AssistContentScreen
 import eu.kanade.presentation.util.DefaultNavigatorScreenTransition
 import eu.kanade.tachiyomi.data.download.DownloadCache
+import eu.kanade.tachiyomi.data.library.LibraryUpdateWorker
 import eu.kanade.tachiyomi.data.notification.NotificationReceiver
 import eu.kanade.tachiyomi.extension.ExtensionManager
 import eu.kanade.tachiyomi.ui.base.activity.BaseActivity
@@ -82,6 +83,7 @@ import eu.kanade.tachiyomi.util.system.dpToPx
 import eu.kanade.tachiyomi.util.system.isBenchmarkBuildType
 import eu.kanade.tachiyomi.util.system.isNavigationBarNeedsScrim
 import eu.kanade.tachiyomi.util.system.updaterEnabled
+import eu.kanade.tachiyomi.util.system.workManager
 import eu.kanade.tachiyomi.util.view.setComposeContent
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.channels.awaitClose
@@ -186,6 +188,11 @@ class MainActivity : BaseActivity() {
             }
 
             val context = LocalContext.current
+            LaunchedEffect(Unit) {
+                if (isLaunch && !isBenchmarkBuildType && !preferences.downloadedOnly.get()) {
+                    LibraryUpdateWorker.startNow(context.workManager, requireNetwork = true)
+                }
+            }
 
             var incognito by remember { mutableStateOf(false) }
             val downloadOnly by preferences.downloadedOnly.collectAsState()

@@ -55,6 +55,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import logcat.LogPriority
+import mihon.app.di.appGraph
 import mihon.feature.migration.config.MigrationConfigScreen
 import mihon.feature.migration.dialog.MigrateMangaDialog
 import tachiyomi.core.common.util.system.logcat
@@ -91,6 +92,9 @@ class MangaScreen(
 
         val successState = state as MangaViewModel.State.Success
         val isHttpSource = remember { successState.source is HttpSource }
+        LaunchedEffect(mangaId) {
+            context.appGraph.libraryPreferences.acknowledgeMangaUpdate(mangaId)
+        }
 
         LaunchedEffect(successState.manga, viewModel.source) {
             if (isHttpSource) {

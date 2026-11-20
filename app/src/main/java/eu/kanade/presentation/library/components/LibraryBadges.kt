@@ -10,6 +10,15 @@ import mihon.icons.materialsymbols.rounded.Folder
 import tachiyomi.presentation.core.components.Badge
 
 @Composable
+internal fun NewUpdateBadge() {
+    Badge(
+        text = "NEW",
+        color = MaterialTheme.colorScheme.error,
+        textColor = MaterialTheme.colorScheme.onError,
+    )
+}
+
+@Composable
 internal fun DownloadsBadge(count: Int) {
     if (count > 0) {
         Badge(

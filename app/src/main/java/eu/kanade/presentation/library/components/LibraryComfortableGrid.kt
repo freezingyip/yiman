@@ -48,10 +48,14 @@ internal fun LibraryComfortableGrid(
                     UnreadBadge(count = libraryItem.badges.unreadCount)
                 },
                 coverBadgeEnd = {
-                    LanguageBadge(
-                        isLocal = libraryItem.badges.isLocal,
-                        sourceLanguage = libraryItem.badges.sourceLanguage,
-                    )
+                    if (libraryItem.badges.hasUnseenUpdate) {
+                        NewUpdateBadge()
+                    } else {
+                        LanguageBadge(
+                            isLocal = libraryItem.badges.isLocal,
+                            sourceLanguage = libraryItem.badges.sourceLanguage,
+                        )
+                    }
                 },
                 onLongClick = { onLongClick(libraryItem.libraryManga) },
                 onClick = { onClick(libraryItem.libraryManga) },

@@ -123,6 +123,24 @@ class LibraryPreferences(
         0,
     )
 
+    val mangaWithUnseenUpdates = preferenceStore.getStringSet(Preference.appStateKey("library_unseen_manga"))
+
+    fun markMangaUpdated(mangaId: Long) {
+        synchronized(mangaWithUnseenUpdates) {
+            val id = mangaId.toString()
+            val current = mangaWithUnseenUpdates.get()
+            if (id !in current) mangaWithUnseenUpdates.set(current + id)
+        }
+    }
+
+    fun acknowledgeMangaUpdate(mangaId: Long) {
+        synchronized(mangaWithUnseenUpdates) {
+            val id = mangaId.toString()
+            val current = mangaWithUnseenUpdates.get()
+            if (id in current) mangaWithUnseenUpdates.set(current - id)
+        }
+    }
+
     // endregion
 
     // region Category

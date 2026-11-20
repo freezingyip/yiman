@@ -283,6 +283,9 @@ class LibraryUpdateWorker(private val context: Context, workerParams: WorkerPara
                                             .sortedByDescending { it.sourceOrder }
 
                                         if (newChapters.isNotEmpty()) {
+                                            if (libraryManga.totalChapters > 0 && newChapters.any { !it.read }) {
+                                                libraryPreferences.markMangaUpdated(manga.id)
+                                            }
                                             val chaptersToDownload = filterChaptersForDownload.await(manga, newChapters)
 
                                             if (chaptersToDownload.isNotEmpty()) {
@@ -491,6 +494,7 @@ class LibraryUpdateWorker(private val context: Context, workerParams: WorkerPara
         suspend fun startNow(
             workManager: WorkManager,
             category: Category? = null,
+            requireNetwork: Boolean = false,
         ): Boolean {
             if (workManager.isRunning(TAG)) {
                 // Already running either as a scheduled or manual job
@@ -501,6 +505,11 @@ class LibraryUpdateWorker(private val context: Context, workerParams: WorkerPara
                 KEY_CATEGORY to category?.id,
             )
             val request = OneTimeWorkRequestBuilder<LibraryUpdateWorker>()
+                .apply {
+                    if (requireNetwork) {
+                        setConstraints(Constraints.Builder().setRequiredNetworkType(NetworkType.CONNECTED).build())
+                    }
+                }
                 .addTag(TAG)
                 .addTag(WORK_NAME_MANUAL)
                 .setInputData(inputData)

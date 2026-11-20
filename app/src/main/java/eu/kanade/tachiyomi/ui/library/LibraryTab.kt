@@ -47,6 +47,7 @@ import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.launch
+import mihon.app.di.appGraph
 import mihon.feature.migration.config.MigrationConfigScreen
 import mihon.icons.materialsymbols.MaterialSymbols
 import mihon.icons.materialsymbols.automirroredrounded.Help
@@ -197,6 +198,7 @@ data object LibraryTab : Tab {
                                     val intent = ReaderActivity.newIntent(context, chapter.mangaId, chapter.id)
                                     intent.putExtra("page_index", chapter.lastPageRead.coerceAtLeast(0))
                                     context.startActivity(intent)
+                                    context.appGraph.libraryPreferences.acknowledgeMangaUpdate(chapter.mangaId)
                                 } else {
                                     snackbarHostState.showSnackbar(context.stringResource(MR.strings.no_next_chapter))
                                 }
