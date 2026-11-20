@@ -30,6 +30,13 @@ stop and tell the user.
 - Imperative title in the style of the history, e.g. `Restore the window size on launch`. Body only for context
   the title can't carry.
 
+## Yiman releases
+
+- Keep only the newest Yiman release on GitHub and in local `build/yiman-releases/`.
+- Publish the new release and verify its signed APKs are downloadable and listed by the app's GitHub update
+  endpoint before removing earlier Yiman releases and their version tags. On the Mac, move older release
+  directories to Trash. Keep the source history and changelog.
+
 ## Pull requests
 
 When asked to open a PR, end its description with a collapsed summary of the prompt: what the user asked for and
