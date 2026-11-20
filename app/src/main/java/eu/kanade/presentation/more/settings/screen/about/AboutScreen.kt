@@ -34,6 +34,13 @@ import kotlinx.coroutines.launch
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.toLocalDateTime
 import mihon.app.di.appGraph
+import mihon.icons.materialsymbols.MaterialSymbols
+import mihon.icons.materialsymbols.automirroredrounded.Label
+import mihon.icons.materialsymbols.rounded.Code
+import mihon.icons.materialsymbols.rounded.Info
+import mihon.icons.materialsymbols.rounded.Refresh
+import mihon.icons.materialsymbols.rounded.Sync
+import mihon.icons.materialsymbols.rounded.Verified
 import tachiyomi.domain.release.interactor.GetApplicationRelease.Result
 import tachiyomi.i18n.MR
 import tachiyomi.presentation.core.components.ScrollbarLazyColumn
@@ -71,6 +78,7 @@ object AboutScreen : Screen() {
                     TextPreferenceWidget(
                         title = stringResource(MR.strings.version),
                         subtitle = remember(is24HourSystem) { getVersionName(getFormattedBuildTime(context)) },
+                        icon = MaterialSymbols.AutoMirroredRounded.Label,
                         onPreferenceClick = {
                             context.copyToClipboard("Debug information", context.appGraph.crashLogUtil.getDebugInfo())
                         },
@@ -80,6 +88,7 @@ object AboutScreen : Screen() {
                     TextPreferenceWidget(
                         title = stringResource(MR.strings.shiman_about_app),
                         subtitle = stringResource(MR.strings.shiman_about_description),
+                        icon = MaterialSymbols.Rounded.Info,
                     )
                 }
                 if (updaterEnabled) {
@@ -87,6 +96,7 @@ object AboutScreen : Screen() {
                         SwitchPreferenceWidget(
                             title = stringResource(MR.strings.yiman_auto_update),
                             subtitle = stringResource(MR.strings.yiman_auto_update_summary),
+                            icon = MaterialSymbols.Rounded.Sync,
                             checked = automaticallyUpdate,
                             onCheckedChanged = automaticUpdates::set,
                         )
@@ -96,6 +106,7 @@ object AboutScreen : Screen() {
                     TextPreferenceWidget(
                         title = stringResource(MR.strings.check_for_updates),
                         subtitle = stringResource(MR.strings.yiman_update_releases),
+                        icon = MaterialSymbols.Rounded.Refresh,
                         onPreferenceClick = {
                             if (!updaterEnabled) {
                                 uriHandler.openUri(AppUpdateChecker.RELEASES_URL)
@@ -136,12 +147,14 @@ object AboutScreen : Screen() {
                     TextPreferenceWidget(
                         title = stringResource(MR.strings.shiman_open_source),
                         subtitle = stringResource(MR.strings.shiman_mihon_credit),
+                        icon = MaterialSymbols.Rounded.Code,
                         onPreferenceClick = { uriHandler.openUri("https://github.com/mihonapp/mihon") },
                     )
                 }
                 item {
                     TextPreferenceWidget(
                         title = stringResource(MR.strings.licenses),
+                        icon = MaterialSymbols.Rounded.Verified,
                         onPreferenceClick = { navigator.push(OpenSourceLicensesScreen()) },
                     )
                 }
