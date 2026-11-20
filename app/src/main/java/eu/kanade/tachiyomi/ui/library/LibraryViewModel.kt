@@ -370,18 +370,17 @@ class LibraryViewModel(
             }
         }
 
-        return mapValues { (key, value) ->
-            if (key.sort.type == LibrarySort.Type.Random) {
-                return@mapValues value.shuffled(Random(libraryPreferences.randomSortSeed.get()))
+        return mapValues { (category, mangaIds) ->
+            val sortedIds = if (category.sort.type == LibrarySort.Type.Random) {
+                mangaIds.shuffled(Random(libraryPreferences.randomSortSeed.get()))
+            } else {
+                val comparator = category.sort.comparator()
+                    .let { if (category.sort.isAscending) it else it.reversed() }
+                    .thenComparator(sortAlphabetically)
+                mangaIds.mapNotNull { favoritesById[it] }.sortedWith(comparator).map { it.id }
             }
-
-            val manga = value.mapNotNull { favoritesById[it] }
-
-            val comparator = key.sort.comparator()
-                .let { if (key.sort.isAscending) it else it.reversed() }
-                .thenComparator(sortAlphabetically)
-
-            manga.sortedWith(comparator).map { it.id }
+            val (updated, remaining) = sortedIds.partition { favoritesById[it]?.badges?.hasUnseenUpdate == true }
+            updated + remaining
         }
     }
 
