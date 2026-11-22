@@ -1,20 +1,24 @@
 package eu.kanade.presentation.library.components
 
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Column
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.PreviewLightDark
 import eu.kanade.presentation.theme.TachiyomiPreviewTheme
+import eu.kanade.tachiyomi.R
 import mihon.icons.materialsymbols.MaterialSymbols
 import mihon.icons.materialsymbols.rounded.Folder
+import tachiyomi.i18n.MR
 import tachiyomi.presentation.core.components.Badge
+import tachiyomi.presentation.core.i18n.stringResource
 
 @Composable
 internal fun NewUpdateBadge() {
-    Badge(
-        text = "NEW",
-        color = MaterialTheme.colorScheme.error,
-        textColor = MaterialTheme.colorScheme.onError,
+    Image(
+        painter = painterResource(R.drawable.library_new_update_badge),
+        contentDescription = stringResource(MR.strings.notification_new_chapters),
     )
 }
 
@@ -63,6 +67,7 @@ private fun BadgePreview() {
         Column {
             DownloadsBadge(count = 10)
             UnreadBadge(count = 10)
+            NewUpdateBadge()
             LanguageBadge(isLocal = true, sourceLanguage = "EN")
             LanguageBadge(isLocal = false, sourceLanguage = "EN")
         }

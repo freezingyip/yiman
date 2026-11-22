@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.BoxScope
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.RowScope
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -245,22 +246,17 @@ private fun MangaGridCover(
     ) {
         cover()
         content?.invoke(this)
-        if (badgesStart != null) {
-            BadgeGroup(
+        if (badgesStart != null || badgesEnd != null) {
+            Row(
                 modifier = Modifier
-                    .padding(4.dp)
-                    .align(Alignment.TopStart),
-                content = badgesStart,
-            )
-        }
-
-        if (badgesEnd != null) {
-            BadgeGroup(
-                modifier = Modifier
-                    .padding(4.dp)
-                    .align(Alignment.TopEnd),
-                content = badgesEnd,
-            )
+                    .align(Alignment.TopCenter)
+                    .fillMaxWidth()
+                    .padding(4.dp),
+            ) {
+                badgesStart?.let { BadgeGroup(content = it) }
+                Spacer(Modifier.weight(1f))
+                badgesEnd?.let { BadgeGroup(content = it) }
+            }
         }
     }
 }
