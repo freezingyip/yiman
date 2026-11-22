@@ -8,22 +8,16 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalLayoutDirection
 import eu.kanade.core.preference.PreferenceMutableState
 import eu.kanade.tachiyomi.ui.library.LibraryItem
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import tachiyomi.domain.category.model.Category
 import tachiyomi.domain.library.model.LibraryDisplayMode
 import tachiyomi.domain.library.model.LibraryManga
 import tachiyomi.presentation.core.components.material.PullRefresh
-import kotlin.time.Duration.Companion.seconds
 
 @Composable
 fun LibraryContent(
@@ -39,7 +33,8 @@ fun LibraryContent(
     onContinueReadingClicked: ((LibraryManga) -> Unit)?,
     onToggleSelection: (Category, LibraryManga) -> Unit,
     onToggleRangeSelection: (Category, LibraryManga) -> Unit,
-    onRefresh: suspend () -> Boolean,
+    isRefreshing: Boolean,
+    onRefresh: () -> Unit,
     onGlobalSearchClicked: () -> Unit,
     getItemCountForCategory: (Category) -> Int?,
     getDisplayMode: (Int) -> PreferenceMutableState<LibraryDisplayMode>,
@@ -56,7 +51,6 @@ fun LibraryContent(
         val pagerState = rememberPagerState(currentPage) { categories.size }
 
         val scope = rememberCoroutineScope()
-        var isRefreshing by remember(pagerState.currentPage) { mutableStateOf(false) }
 
         if (showPageTabs && categories.isNotEmpty() && (categories.size > 1 || !categories.first().isSystemCategory)) {
             LaunchedEffect(categories) {
@@ -79,15 +73,7 @@ fun LibraryContent(
         PullRefresh(
             refreshing = isRefreshing,
             enabled = selection.isEmpty(),
-            onRefresh = {
-                scope.launch {
-                    if (!onRefresh()) return@launch
-                    // Fake refresh status but hide it after a second as it's a long running task
-                    isRefreshing = true
-                    delay(1.seconds)
-                    isRefreshing = false
-                }
-            },
+            onRefresh = onRefresh,
         ) {
             LibraryPager(
                 state = pagerState,

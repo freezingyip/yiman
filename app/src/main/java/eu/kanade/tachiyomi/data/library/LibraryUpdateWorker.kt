@@ -36,7 +36,9 @@ import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.ensureActive
+import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.sync.Semaphore
 import kotlinx.coroutines.sync.withPermit
 import kotlinx.coroutines.withContext
@@ -181,7 +183,12 @@ class LibraryUpdateWorker(private val context: Context, workerParams: WorkerPara
             }
         }
 
-        val restrictions = libraryPreferences.autoUpdateMangaRestrictions.get()
+        // Direct refreshes, including app launch, should check chapters even when a scheduled update would skip them.
+        val restrictions = if (WORK_NAME_AUTO in tags) {
+            libraryPreferences.autoUpdateMangaRestrictions.get()
+        } else {
+            emptySet()
+        }
         val skippedUpdates = mutableListOf<Pair<Manga, String?>>()
         val timeZone = TimeZone.currentSystemDefault()
         val fetchWindowUpperBound = fetchInterval.getWindow(
@@ -519,12 +526,18 @@ class LibraryUpdateWorker(private val context: Context, workerParams: WorkerPara
             return true
         }
 
+        fun observeRunning(workManager: WorkManager) = workManager
+            .getWorkInfosFlow(runningWorkQuery)
+            .map { it.isNotEmpty() }
+            .distinctUntilChanged()
+
+        private val runningWorkQuery = WorkQuery.Builder.fromTags(listOf(TAG))
+            .addStates(listOf(WorkInfo.State.RUNNING))
+            .build()
+
         suspend fun stop(context: Context) {
             val workManager = context.workManager
-            val workQuery = WorkQuery.Builder.fromTags(listOf(TAG))
-                .addStates(listOf(WorkInfo.State.RUNNING))
-                .build()
-            workManager.getWorkInfosFlow(workQuery).first()
+            workManager.getWorkInfosFlow(runningWorkQuery).first()
                 // Should only return one work but just in case
                 .forEach {
                     workManager.cancelWorkById(it.id)

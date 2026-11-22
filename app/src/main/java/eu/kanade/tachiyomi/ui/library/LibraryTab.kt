@@ -94,10 +94,12 @@ data object LibraryTab : Tab {
         val state by viewModel.state.collectAsStateWithLifecycle()
 
         val snackbarHostState = remember { SnackbarHostState() }
+        val isRefreshing by remember(context) { LibraryUpdateWorker.observeRunning(context.workManager) }
+            .collectAsStateWithLifecycle(initialValue = false)
 
-        val onClickRefresh: suspend (Category?) -> Boolean = { category ->
-            val started = LibraryUpdateWorker.startNow(context.workManager, category)
+        val onClickRefresh: (Category?) -> Unit = { category ->
             scope.launch {
+                val started = LibraryUpdateWorker.startNow(context.workManager, category)
                 val msgRes = when {
                     !started -> MR.strings.update_already_running
                     category != null -> MR.strings.updating_category
@@ -105,7 +107,6 @@ data object LibraryTab : Tab {
                 }
                 snackbarHostState.showSnackbar(context.stringResource(msgRes))
             }
-            started
         }
 
         Scaffold(
@@ -123,8 +124,8 @@ data object LibraryTab : Tab {
                     onClickSelectAll = viewModel::selectAll,
                     onClickInvertSelection = viewModel::invertSelection,
                     onClickFilter = viewModel::showSettingsDialog,
-                    onClickRefresh = { scope.launch { onClickRefresh(state.activeCategory) } },
-                    onClickGlobalUpdate = { scope.launch { onClickRefresh(null) } },
+                    onClickRefresh = { onClickRefresh(state.activeCategory) },
+                    onClickGlobalUpdate = { onClickRefresh(null) },
                     onClickRecentUpdates = { tabNavigator.current = eu.kanade.tachiyomi.ui.updates.UpdatesTab },
                     onClickOpenRandomManga = {
                         scope.launch {
@@ -210,6 +211,7 @@ data object LibraryTab : Tab {
                             viewModel.toggleRangeSelection(category, manga)
                             haptic.performHapticFeedback(HapticFeedbackType.LongPress)
                         },
+                        isRefreshing = isRefreshing,
                         onRefresh = { onClickRefresh(state.activeCategory) },
                         onGlobalSearchClicked = {
                             navigator.push(GlobalSearchScreen(viewModel.state.value.searchQuery ?: ""))
