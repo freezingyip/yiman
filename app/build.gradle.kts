@@ -419,8 +419,8 @@ androidComponents {
     onVariants(selector().withBuildType("release")) { variant ->
         variant.applicationId.set("io.github.freezingyip.yiman")
         variant.outputs.forEach { output ->
-            output.versionCode.set(9)
-            output.versionName.set("0.1.0-preview.9")
+            output.versionCode.set(10)
+            output.versionName.set("0.1.0-preview.10")
         }
     }
 
